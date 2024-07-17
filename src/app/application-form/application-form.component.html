@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="col my-5">
+        <mat-card appearance="outlined">
+            <mat-card-header *ngIf="stepNumber === 1 || (stepNumber === 2 && myForm.value.lookingForAJob === false && myForm.value.experienceLevel === 'Senior')">
+                <mat-card-title>Application form</mat-card-title>
+                <mat-card-subtitle>Fill in required fields</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="mt-4">
+                <form *ngIf="stepNumber === 1" [formGroup]="myForm" (ngSubmit)="onSubmitStepOne()">
+                    <p>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name" required>
+                            <mat-error *ngIf="myForm.get('name')!.hasError('required')">Name is required</mat-error>
+                        </mat-form-field>
+                    </p>
+        
+                    <p>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Surname</mat-label>
+                            <input matInput formControlName="surname" required>
+                            <mat-error *ngIf="myForm.get('surname')!.hasError('required')">Surname is required</mat-error>
+                        </mat-form-field>
+                    </p>
+                    
+                    <p>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" required>
+                            <mat-error *ngIf="myForm.get('email')!.hasError('required')">Email is required</mat-error>
+                            <mat-error *ngIf="myForm.get('email')!.hasError('email')">Invalid email address</mat-error>
+                        </mat-form-field> 
+                    </p>
+        
+                    <p>
+                        <mat-checkbox formControlName="lookingForAJob">Looking for a job?</mat-checkbox>
+                    </p>
+                    
+                    <p>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Experience Level</mat-label>
+                            <mat-select formControlName="experienceLevel" required>
+                            <mat-option *ngFor="let level of levels" [value]="level">
+                                {{level}}
+                            </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </p>
+        
+                    <p *ngIf="myForm.value.experienceLevel === 'Junior'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>2+2=</mat-label>
+                            <input matInput formControlName="twoPlusTwo" required>
+                            <mat-error *ngIf="myForm.get('twoPlusTwo')!.hasError('required')">Answer is required</mat-error>
+                            <mat-error *ngIf="myForm.get('twoPlusTwo')?.hasError('exactValue')">Answer not correct</mat-error>
+                        </mat-form-field> 
+                    </p>
+        
+                    <p *ngIf="myForm.value.experienceLevel === 'Mid'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Description about yourself without letter 'a'</mat-label>
+                            <textarea matInput formControlName="description" required></textarea>
+                            <mat-error *ngIf="myForm.get('description')!.hasError('required')">Answer is required</mat-error>
+                            <mat-error *ngIf="myForm.get('description')?.hasError('noLetterA')">Answer has letter 'a' in it</mat-error>
+                        </mat-form-field> 
+                    </p>
+            
+                    <mat-card-actions>
+                        <button mat-raised-button color="primary" type="submit" [disabled]="!myForm.valid">Next</button>
+                    </mat-card-actions>
+                </form>
+                <form *ngIf="stepNumber === 2" [formGroup]="myForm" (ngSubmit)="onSubmitStepTwo()">
+                    <p *ngIf="myForm.value.lookingForAJob === false && myForm.value.experienceLevel === 'Senior'">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Motivational letter</mat-label>
+                            <textarea matInput formControlName="motivationalLetter" required></textarea>
+                            <mat-error *ngIf="myForm.get('motivationalLetter')!.hasError('required')">Letter is required</mat-error>
+                            <mat-error *ngIf="myForm.get('motivationalLetter')?.hasError('minlength')">Letter has to be longer than 140 chars</mat-error>
+                        </mat-form-field> 
+                    </p>
+        
+                    <mat-card-actions>
+                        <button mat-raised-button color="primary" type="submit" [disabled]="!myForm.valid">Submit</button>
+                    </mat-card-actions>
+                </form>
+        
+                <h2 class="text-center pb-5" *ngIf="stepNumber === 3 && !(myForm.value.lookingForAJob === false && myForm.value.experienceLevel === 'Senior')">Application submitted!</h2>
+        
+                <pre *ngIf="stepNumber === 3 && myForm.value.lookingForAJob === false && myForm.value.experienceLevel === 'Senior'">{{myForm.value | json}}</pre>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
